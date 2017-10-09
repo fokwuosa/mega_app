@@ -5,11 +5,12 @@ const url = 'mongodb://localhost:27017/users';
 let db;
 
 function addUser(name, cb){
-    
+
     getConnection().then((db) => {
-        db.collection('users').insert( { name: name} );
-        console.log("Added name: " + name);
-        cb();
+        db.collection('users').insert( { name: name}, function(err, res) {
+            console.log("Added name: " + name);
+            cb();
+        });
     })
 }
 

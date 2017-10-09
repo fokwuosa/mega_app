@@ -1,3 +1,5 @@
+const mongo = require('./mongo');
+
 const express = require('express')
 const pug = require('pug');
 
@@ -5,49 +7,29 @@ const app = express()
 app.set('view engine', 'pug')
 
 var bodyParser = require('body-parser')
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+app.use(bodyParser.urlencoded({    
   extended: true
 })); 
 
-app.use(express.urlencoded()); // to support URL-encoded bodies
-
-const MongoClient = require('mongodb').MongoClient
-, assert = require('assert');
-
-// Connection URL
-const url = 'mongodb://localhost:27017/users';
-
-let db;
+app.use(express.urlencoded());
 
 app.get('/users', function (req, res) {
 
-    const collection = db.collection('users');
-    
-    collection.find({}).toArray(function (err, users) {
-        if (err) return console.log(err);
-        console.log("Found the following records");
-        console.log(users);
-
+    mongo.getUsers(function (users){
         res.render(
             'users',
             {"users" : users})
-    })
+    });
 })
 
 app.post('/user', function(req, res){
 
-    db.collection('users').insert( { name: req.body.name} );
+    mongo.addUser(req.body.name);
 
     res.redirect('/users');
-
 })
 
-MongoClient.connect(url, function(err, database) {
-    if (err) return console.log(err);
-    console.log("Connected successfully to server");
-
-    db = database;
-
+mongo.startDBServer(function () {
     app.listen(3000, function () {
         console.log('Mega App listening on port 3000!')
     })

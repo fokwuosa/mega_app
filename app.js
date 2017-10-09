@@ -4,10 +4,12 @@ const pug = require('pug');
 let app = express()
 app.set('view engine', 'pug')
 
-let users = [{name: "Faith"}, {name: "Tuffail"}];
+let users = { users: [{name: "Faith"}, {name: "Tuffail"}] };
 
-app.get('/users', function (req, res) {
-    res.send('Hello World!')
+app.get('/users', function (req, res) {  
+    res.render(
+        'users',
+        users)
 })
 
 app.listen(3000, function () {

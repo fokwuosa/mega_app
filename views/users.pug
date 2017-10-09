@@ -4,7 +4,7 @@ html
         each user in users
             li #{user.name}
 
-    form(action = "/user" method "POST")
-    p Name:
-        input(type="text" name="name" placeholder="")
-    input(type ="submit")
+    form(action = "/user", method = "POST")
+        p Name:
+        input(type="text", name="name", value="")
+        input(type ="submit", value="Submit")

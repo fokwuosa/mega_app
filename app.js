@@ -4,6 +4,13 @@ const pug = require('pug');
 const app = express()
 app.set('view engine', 'pug')
 
+var bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
+
+app.use(express.urlencoded()); // to support URL-encoded bodies
+
 const MongoClient = require('mongodb').MongoClient
 , assert = require('assert');
 
@@ -25,6 +32,14 @@ app.get('/users', function (req, res) {
             'users',
             {"users" : users})
     })
+})
+
+app.post('/user', function(req, res){
+
+    db.collection('users').insert( { name: req.body.name} );
+
+    res.redirect('/users');
+
 })
 
 MongoClient.connect(url, function(err, database) {

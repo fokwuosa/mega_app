@@ -24,13 +24,11 @@ app.get('/users', function (req, res) {
 
 app.post('/user', function(req, res){
 
-    mongo.addUser(req.body.name);
-
-    res.redirect('/users');
+    mongo.addUser(req.body.name, function() {
+        res.redirect('/users');
+    });
 })
 
-mongo.startDBServer(function () {
-    app.listen(3000, function () {
-        console.log('Mega App listening on port 3000!')
-    })
-});
+app.listen(3000, function () {
+    console.log('Mega App listening on port 3000!')
+})

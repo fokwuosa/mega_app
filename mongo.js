@@ -1,16 +1,23 @@
-const MongoClient = require('mongodb').MongoClient
-, assert = require('assert');
+const MongoClient = require('mongodb').MongoClient;
 
 const url = 'mongodb://localhost:27017/users';
 
 let db;
 
-function addUser(name){
+function addUser(name, cb){
+    if (!db) {
+        initDB();
+    }
     db.collection('users').insert( { name: name} );
     console.log("Added name: " + name);
+
+    cb();
 }
 
 function getUsers(cb){
+    if (!db) {
+        initDB();
+    }
     db.collection('users').find({}).toArray(function (err, users) {
         if (err) return console.log(err);
 
@@ -18,19 +25,16 @@ function getUsers(cb){
     })
 }
 
-function startDBServer(cb){
+function initDB(){
     MongoClient.connect(url, function(err, database) {
         if (err) return console.log(err);
         console.log("Connected successfully to server");
     
         db = database;
-    
-        cb();
     });
 }
 
 module.exports = {
     addUser : addUser,
-    getUsers : getUsers,
-    startDBServer : startDBServer
+    getUsers : getUsers
 }

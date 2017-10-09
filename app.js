@@ -10,32 +10,30 @@ const MongoClient = require('mongodb').MongoClient
 // Connection URL
 const url = 'mongodb://localhost:27017/users';
 
-let users = { users: [{name: "Faith"}, {name: "Tuffail"}] };
+let db;
 
-app.get('/users', function (req, res) { 
-
-    // Use connect method to connect to the server
-MongoClient.connect(url, function(err, db) {
-    assert.equal(null, err);
-    console.log("Connected successfully to server");
+app.get('/users', function (req, res) {
 
     const collection = db.collection('users');
-
-    collection.find({}).toArray(function (err, db_users) {
-        assert.equal(err, null);
-        console.log("Found the following records");
-        console.log(db_users);
-        users = db_users;
-    })
     
-    db.close();
-    });
+    collection.find({}).toArray(function (err, users) {
+        if (err) return console.log(err);
+        console.log("Found the following records");
+        console.log(users);
 
-    res.render(
-        'users',
-        users)
+        res.render(
+            'users',
+            {"users" : users})
+    })
 })
 
-app.listen(3000, function () {
-    console.log('Mega App listening on port 3000!')
-})
+MongoClient.connect(url, function(err, database) {
+    if (err) return console.log(err);
+    console.log("Connected successfully to server");
+
+    db = database;
+
+    app.listen(3000, function () {
+        console.log('Mega App listening on port 3000!')
+    })
+});
